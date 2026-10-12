@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weatherapp/colorsTheme/AppColors/colors.dart';
+import 'package:weatherapp/repository/Services/weather_service.dart';
 import 'package:weatherapp/widgets/dayli_weather_widget.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -11,6 +12,28 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
+  List<dynamic> hours = [];
+  List<dynamic> temperatures = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadWeather();
+  }
+
+  Future<void> loadWeather() async {
+    try {
+      final result = await getWeather();
+
+      setState(() {
+        hours = (result['hourly']['time'] as List).take(24).toList();
+        temperatures =
+            (result['hourly']['temperature_2m'] as List).take(24).toList();
+      });
+    } catch (e) {
+      debugPrint('Не удалось получить погоду: $e');
+    }
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -89,7 +112,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: DailyWeatherWidget(),
+                  child: DailyWeatherWidget(
+                    hours: hours,
+                    temperatures: temperatures,
+                  ),
                 ),
               ),
             ],
