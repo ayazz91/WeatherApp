@@ -11,7 +11,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  @override
   List<dynamic> hours = [];
   List<dynamic> temperatures = [];
 
@@ -70,13 +69,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Icon(Icons.wb_sunny, color: Colors.white, size: 60),
-                  Text(
-                    '24°C',
-                    style: TextStyle(
-                      fontSize: 50,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  hours.isNotEmpty && temperatures.isNotEmpty
+                      ? Text(
+                          '${temperatures[0]}°C',
+                          style: TextStyle(fontSize: 48, color: Colors.white),
+                        )
+                      : CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                   Text(
                     'Ясно',
