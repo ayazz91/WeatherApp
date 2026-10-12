@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weatherapp/colorsTheme/AppColors/colors.dart';
+import 'package:weatherapp/widgets/dayli_weather_widget.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -84,31 +85,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: double.infinity,
                   height: 140,
                   decoration: BoxDecoration(
+                    // ignore: deprecated_member_use
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        Column(
-                          children: [
-                            Text('15:00'),
-                            Icon(Icons.wb_sunny),
-                            Text('24°C'),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text('16:00'),
-                            Icon(Icons.cloud),
-                            Text('22°C'),
-                          ],
-                        ),
-                        // Добавь ещё карточки
-                      ],
-                    ),
-                  ),
+                  child: DailyWeatherWidget(),
                 ),
               ),
             ],

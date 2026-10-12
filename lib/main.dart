@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weatherapp/Screens/AppPages/my_home_page.dart';
+import 'package:weatherapp/Screens/AppPages/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(color: Colors.white),
         ),
       ),
-      home: const MyHomePage(),
+      home: const SplashScreen(),
     );
   }
 }
