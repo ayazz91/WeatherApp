@@ -12,23 +12,15 @@ Future<Map<String, dynamic>> getWeather() async {
         'longitude': 76.92,
         'current': 'temperature_2m,relative_humidity_2m,wind_speed_10m',
         'hourly': 'temperature_2m',
+        'daily': 'weather_code,temperature_2m_max,temperature_2m_min',
+        'forecast_days': 7,
         'timezone': 'Asia/Almaty',
       },
     );
-    final data = response.data;
-    final temperature = data['current']['temperature_2m'].toString();
 
-    debugPrint(response.data['hourly']['time'].toString());
-    debugPrint(response.data['hourly']['temperature_2m'].toString()); 
-
-    return data;
+    return Map<String, dynamic>.from(response.data);
   } on DioException catch (e) {
     debugPrint('Ошибка запроса: ${e.message}');
-
-    if (e.response != null) {
-      debugPrint('Статус код: ${e.response?.statusCode}');
-      debugPrint('Ответ: ${e.response?.data}');
-    }
-    rethrow; // Проброс исключения дальше, чтобы его можно было обработать в вызывающем коде
+    rethrow;
   }
 }

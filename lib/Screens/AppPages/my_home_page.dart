@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weatherapp/colorsTheme/AppColors/colors.dart';
 import 'package:weatherapp/repository/Services/weather_service.dart';
 import 'package:weatherapp/widgets/dayli_weather_widget.dart';
+import 'package:weatherapp/widgets/weekly_weather_widget.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -13,6 +14,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<dynamic> hours = [];
   List<dynamic> temperatures = [];
+  List<dynamic> temperatureMax = [];
+  List<dynamic> temperatureMin = [];
+  List<dynamic> days = [];
 
   @override
   void initState() {
@@ -24,15 +28,37 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       final result = await getWeather();
 
+      final daily = Map<String, dynamic>.from(result['daily']);
+
+      debugPrint('DAILY DATA: $daily');
+
+      final loadedDays = List<dynamic>.from(daily['time'] ?? []);
+      final loadedMax = List<dynamic>.from(daily['temperature_2m_max'] ?? []);
+      final loadedMin = List<dynamic>.from(daily['temperature_2m_min'] ?? []);
+
+      debugPrint('LOADED DAYS: ${loadedDays.length}');
+      debugPrint('LOADED MAX: ${loadedMax.length}');
+      debugPrint('LOADED MIN: ${loadedMin.length}');
+
+      if (!mounted) return;
+
       setState(() {
-        hours = (result['hourly']['time'] as List).take(24).toList();
-        temperatures =
-            (result['hourly']['temperature_2m'] as List).take(24).toList();
+        days = loadedDays;
+        temperatureMax = loadedMax;
+        temperatureMin = loadedMin;
+
+        hours = List<dynamic>.from(result['hourly']['time']).take(24).toList();
+
+        temperatures = List<dynamic>.from(
+          result['hourly']['temperature_2m'],
+        ).take(24).toList();
       });
-    } catch (e) {
-      debugPrint('Не удалось получить погоду: $e');
+    } catch (e, stackTrace) {
+      debugPrint('WEATHER ERROR: $e');
+      debugPrintStack(stackTrace: stackTrace);
     }
   }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -75,9 +101,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           style: TextStyle(fontSize: 48, color: Colors.white),
                         )
                       : CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        ),
                   Text(
                     'Ясно',
                     style: TextStyle(fontSize: 20, color: Colors.white),
@@ -86,20 +113,29 @@ class _MyHomePageState extends State<MyHomePage> {
                     'Ощущается как 26°C',
                     style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '↑ 27°C',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                      SizedBox(width: 16),
-                      Text(
-                        '↓ 15°C',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                    ],
-                  ),
+
+                  temperatureMax.isNotEmpty && temperatureMin.isNotEmpty
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '↑ ${temperatureMax[0]}°C',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Text(
+                              '↓ ${temperatureMin[0]}°C',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        )
+                      : const SizedBox(height: 20),
                 ],
               ),
               Padding(
@@ -118,6 +154,38 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
+
+              Padding(
+                padding: const EdgeInsets.only(top: 12, left: 25, right: 25),
+                child: Container(
+                  width: double.infinity,
+                  height: 330,
+                  decoration: BoxDecoration(
+                    // ignore: deprecated_member_use
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 6, left: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Прогноз на 7 дней',
+                          style: TextStyle(fontSize: 20),
+                        ),
+
+                        WeeklyWeatherWidget(
+                          days: days,
+                          temperatureMax: temperatureMax,
+                          temperatureMin: temperatureMin,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 24),
             ],
           ),
         ),
