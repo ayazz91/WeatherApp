@@ -27,18 +27,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> loadWeather() async {
     try {
       final result = await getWeather();
-
       final daily = Map<String, dynamic>.from(result['daily']);
-
-      debugPrint('DAILY DATA: $daily');
-
       final loadedDays = List<dynamic>.from(daily['time'] ?? []);
       final loadedMax = List<dynamic>.from(daily['temperature_2m_max'] ?? []);
       final loadedMin = List<dynamic>.from(daily['temperature_2m_min'] ?? []);
-
-      debugPrint('LOADED DAYS: ${loadedDays.length}');
-      debugPrint('LOADED MAX: ${loadedMax.length}');
-      debugPrint('LOADED MIN: ${loadedMin.length}');
 
       if (!mounted) return;
 
@@ -185,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 80),
             ],
           ),
         ),

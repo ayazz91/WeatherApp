@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:weatherapp/Screens/AppPages/my_home_page.dart';
+import 'package:flutter/material.dart' hide NavigationBar;
 import 'package:weatherapp/colorsTheme/AppColors/colors.dart';
+import 'package:weatherapp/widgets/scaffold_with_nav_bar.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const MyHomePage()),
+        MaterialPageRoute(builder: (context) => const MainShellNav()),
       );
     });
   }
